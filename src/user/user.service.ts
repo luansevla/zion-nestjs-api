@@ -7,11 +7,11 @@ import { User, UserDocument } from './schema/user.schema';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const { email } = createUserDto;
-    
+
     // Verifica se e-mail já existe
     const userExists = await this.userModel.findOne({ email });
     if (userExists) throw new ConflictException('E-mail já cadastrado');
@@ -25,6 +25,13 @@ export class UserService {
       .find()
       .populate('cell', 'name area')
       .populate('leader', 'name email')
+      .exec();
+  }
+
+  async findOneByEmail(email: string): Promise<UserDocument | null> {
+    return this.userModel
+      .findOne({ email })
+      .select('+password') // O '+' força o Mongoose a trazer a senha apenas nesta consulta
       .exec();
   }
 

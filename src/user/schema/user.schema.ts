@@ -6,44 +6,47 @@ export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop({ required: true })
-  name: string;
+    @Prop({ required: true })
+    _id: string;
 
-  @Prop({ required: true, unique: true })
-  email: string;
+    @Prop({ required: true })
+    name: string;
 
-  @Prop({ required: true, select: false }) // A senha nunca sai no GET por padrão
-  password: string;
+    @Prop({ required: true, unique: true })
+    email: string;
 
-  @Prop()
-  phoneNumber: string;
+    @Prop({ required: true, select: false }) // A senha nunca sai no GET por padrão
+    password: string;
 
-  @Prop({ default: 'MEMBER' })
-  role: string;
+    @Prop()
+    phoneNumber: string;
 
-  @Prop({ default: 'VISITOR' })
-  userType: string;
+    @Prop({ default: 'MEMBER' })
+    role: string;
 
-  @Prop()
-  birthDate: Date;
+    @Prop({ default: 'VISITOR' })
+    userType: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Cell' })
-  cell: Types.ObjectId;
+    @Prop()
+    birthDate: Date;
 
-  @Prop({ type: AddressSchema }) // Endereço embutido para performance
-  address: Address;
+    @Prop({ type: Types.ObjectId, ref: 'Cell' }) // Deve ser apenas o ID
+    cell: Types.ObjectId;
 
-  @Prop({ default: true })
-  status: boolean;
+    @Prop({ type: AddressSchema }) // Endereço embutido para performance
+    address: Address;
 
-  @Prop()
-  otp: string;
+    @Prop({ default: true })
+    status: boolean;
 
-  @Prop()
-  area: string;
+    @Prop()
+    otp: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
-  leader: Types.ObjectId;
+    @Prop()
+    area: string;
+
+    @Prop({ type: Types.ObjectId, ref: 'User' })
+    leader: Types.ObjectId;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

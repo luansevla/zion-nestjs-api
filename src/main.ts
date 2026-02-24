@@ -17,6 +17,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Zion NestJS API')
     .setDescription('Documentação da API de endereços - O Alvo')
+    .addBearerAuth()
     .setVersion('1.0')
     .build();
 

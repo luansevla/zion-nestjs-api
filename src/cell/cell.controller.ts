@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CellService } from './cell.service';
 import { CreateCellDto } from './dto/create-cell.dto';
 import { UpdateCellDto } from './dto/update-cell.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('cells')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('cells')
 export class CellController {
   constructor(private readonly cellService: CellService) {}
