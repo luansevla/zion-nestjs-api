@@ -8,28 +8,32 @@ import { CellModule } from './cell/cell.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/zion_api'),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRoot(process.env.MONGO_URI!),
     UserModule,
     AddressModule,
     MeetingModule,
     CellModule,
     AuthModule,
-    MailerModule.forRoot({
-      transport: {
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth: {
-          user: 'luan.devalltime@gmail.com',
-          pass: 'gagd nyud spcz kasc',
+    MailerModule.forRootAsync({
+      inject: [ConfigService], // Injetamos o ConfigService aqui
+      useFactory: (config: ConfigService) => ({
+        transport: {
+          host: config.get('MAIL_HOST'), // Usamos config.get() em vez de process.env
+          port: config.get<number>('MAIL_PORT'),
+          secure: true, // true para 465
+          auth: {
+            user: config.get('MAIL_USER'),
+            pass: config.get('MAIL_PASS'),
+          },
         },
-      },
-      defaults: {
-        from: '"Zion API" <O Alvo>',
-      },
+      }),
     }),
   ],
   controllers: [AppController],
