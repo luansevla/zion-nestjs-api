@@ -4,13 +4,12 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ActivateUserDto } from './dto/activate-user.dto';
 
 @ApiTags('users')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   @ApiOperation({ summary: 'Criar novo usuário (Líder, Membro, etc)' })
@@ -29,6 +28,13 @@ export class UserController {
   @ApiOperation({ summary: 'Buscar usuário por ID' })
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
+  }
+
+  @Post('activate')
+  @ApiOperation({ summary: 'Ativar conta do usuário usando o código enviado por e-mail' })
+  async activate(@Body() activateUserDto: ActivateUserDto) {
+    // Agora você passa o DTO para o service
+    return this.userService.activateUser(activateUserDto.email, activateUserDto.otp);
   }
 
   @Patch(':id')

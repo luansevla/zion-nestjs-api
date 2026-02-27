@@ -1,14 +1,14 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 import { Type } from 'class-transformer';
-import { IsString, IsNotEmpty, IsEmail, IsOptional, IsDateString, ValidateNested, IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, IsOptional, IsDateString, ValidateNested, IsBoolean, IsMongoId } from 'class-validator';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { UpdateCellDto } from 'src/cell/dto/update-cell.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
 
     @ApiProperty({ example: '64b8f0c2e1d3a2b4c5d6e7f8', description: 'ID do usuário (gerado automaticamente)' })
-    @IsString()
+    @IsMongoId()
     @IsNotEmpty()
     _id: string;
 
@@ -47,8 +47,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     @IsOptional()
     birthDate: Date;
 
-    @ApiProperty({ description: 'ID da célula à qual o usuário pertence' })
-    @IsString()
+    @IsMongoId({ message: 'O ID da célula deve ser um ObjectId válido' })
     @IsOptional()
     cell: string;
 
@@ -73,8 +72,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     @IsOptional()
     area: string;
 
-    @ApiProperty({ description: 'ID do líder direto' })
-    @IsString()
+    @IsMongoId({ message: 'O ID do líder deve ser um ObjectId válido' })
     @IsOptional()
     leader: string;
 }

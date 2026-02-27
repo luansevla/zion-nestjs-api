@@ -6,7 +6,8 @@ import {
     IsOptional,
     IsBoolean,
     IsDateString,
-    ValidateNested
+    ValidateNested,
+    IsMongoId
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -16,8 +17,8 @@ import { CreateCellDto } from '../../cell/dto/create-cell.dto';
 export class CreateUserDto {
 
     @ApiProperty({ example: '64b8f0c2e1d3a2b4c5d6e7f8', description: 'ID do usuário (gerado automaticamente)' })
-    @IsString()
-    @IsNotEmpty()
+    @IsMongoId()
+    @IsOptional()
     _id: string;
 
 
@@ -56,10 +57,9 @@ export class CreateUserDto {
     @IsOptional()
     birthDate: Date;
 
-    @ApiProperty({ example: '65db1234567890abcdef1234' })
-    @IsString()
+    @IsMongoId({ message: 'O ID da célula deve ser um ObjectId válido' })
     @IsOptional()
-    cell: string; // Mude de CreateCellDto para string
+    cell: string;
 
     @ApiProperty({ type: CreateAddressDto })
     @IsNotEmpty()
@@ -82,8 +82,7 @@ export class CreateUserDto {
     @IsOptional()
     area: string;
 
-    @ApiProperty({ description: 'ID do líder direto' })
-    @IsString()
+    @IsMongoId({ message: 'O ID do líder deve ser um ObjectId válido' })
     @IsOptional()
     leader: string;
 }
