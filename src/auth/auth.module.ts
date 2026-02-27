@@ -11,8 +11,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: '982d1bd5578c8ec72ae5672470fc683fde3d906630f85e8a4b7b2ddafd6f888d', // Em produção, use .env
-      signOptions: { expiresIn: '1d' }, // Token vale por 1 dia
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: "24h" },
     }),
   ],
   controllers: [AuthController],
