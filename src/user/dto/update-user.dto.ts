@@ -2,8 +2,7 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 import { Type } from 'class-transformer';
 import { IsString, IsNotEmpty, IsEmail, IsOptional, IsDateString, ValidateNested, IsBoolean, IsMongoId } from 'class-validator';
-import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
-import { UpdateCellDto } from 'src/cell/dto/update-cell.dto';
+import { UpdateAddressDto } from '../../address/dto/update-address.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
 

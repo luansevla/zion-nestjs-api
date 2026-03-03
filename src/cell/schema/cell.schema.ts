@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Address, AddressSchema } from 'src/address/schema/address.schema';
+import { Address, AddressSchema } from '../../address/schema/address.schema';
 
 export type CellDocument = Cell & Document;
 

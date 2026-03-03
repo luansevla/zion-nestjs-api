@@ -1,10 +1,10 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateCellDto } from './create-cell.dto';
 import { Types } from 'mongoose';
-import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
+import { UpdateAddressDto } from '../../address/dto/update-address.dto';
 import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { CreateAddressDto } from 'src/address/dto/create-address.dto';
+import { CreateAddressDto } from '../../address/dto/create-address.dto';
 
 export class UpdateCellDto extends PartialType(CreateCellDto) {
     @ApiProperty() @IsString() @IsNotEmpty()
