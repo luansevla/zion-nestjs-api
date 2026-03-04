@@ -1,41 +1,25 @@
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('api/v1');
-
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
-
-
-  const config = new DocumentBuilder()
-    .setTitle('Zion NestJS API')
-    .setDescription('Documentação da API de endereços - O Alvo')
-    .addBearerAuth()
-    .setVersion('1.0')
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-
-  SwaggerModule.setup('docs', app, document);
-
+  
+  // Habilita o CORS para que o Postman e o seu Frontend funcionem
   app.enableCors();
+  
+  // Configuração global de validação (importante para o DTO de OTP)
+  app.useGlobalPipes(new ValidationPipe());
 
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-
-  console.log(`🚀 API rodando em: http://localhost:${port}/api/v1`);
-  console.log(`📄 Documentação em: http://localhost:${port}/docs`);
+  // O SEGREDO: Só chama o listen se não estiver na Vercel
+  if (process.env.NODE_ENV !== 'production') {
+    const port = process.env.PORT || 3000;
+    await app.listen(port);
+    console.log(`Application is running on: http://localhost:${port}`);
+  } else {
+    // Na Vercel, apenas inicializamos a aplicação
+    await app.init();
+  }
 }
 
-if (process.env.NODE_ENV !== 'production') {
-  bootstrap();
-}
-
-export default bootstrap;
+bootstrap();
