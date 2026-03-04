@@ -3,34 +3,31 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-async function bootstrap() {
+// 1. Mudamos para exportar a função bootstrap ou o app
+export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  // Habilita o CORS para que o Postman e o seu Frontend funcionem
-  app.enableCors();
-  
- 
-  
-  const config = new DocumentBuilder()
-    .setTitle('Zion API')
-    .setDescription('Documentação da API Zion - Fluxo de Recuperação de Senha')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document); // Acesse via /api/docs
 
+  app.enableCors(); // Resolve o erro de rede local
   app.useGlobalPipes(new ValidationPipe());
 
-  // O SEGREDO: Só chama o listen se não estiver na Vercel
+  // Swagger
+  const config = new DocumentBuilder()
+    .setTitle('Zion API')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
+  // 2. Se não estiver em produção (Vercel), roda o listen
   if (process.env.NODE_ENV !== 'production') {
-    const port = process.env.PORT || 4000;
-    await app.listen(port);
-    console.log(`Application is running on: http://localhost:${port}`);
+    await app.listen(process.env.PORT || 4000);
   } else {
-    // Na Vercel, apenas inicializamos a aplicação
+    // Na Vercel, apenas inicializamos e retornamos a instância do Express
     await app.init();
+    return app.getHttpAdapter().getInstance();
   }
 }
 
-bootstrap();
+// 3. O Pulo do Gato: Exportar para a Vercel encontrar o módulo
+const server = bootstrap();
+export default server;
