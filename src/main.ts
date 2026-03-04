@@ -1,19 +1,37 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
-async function bootstrap() {
+// 1. Alteramos para que a função bootstrap retorne a instância do servidor
+export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
+  // Resolve o erro de rede local do Postman
   app.enableCors();
-  const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
-    .setVersion('1.0')
-    .addTag('cats')
-    .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  
+  // Garante que os DTOs de recuperação de senha funcionem
+  app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(process.env.PORT ?? 3000);
+  // Swagger - Agora em /api/docs para evitar conflitos
+  const config = new DocumentBuilder()
+    .setTitle('Zion API')
+    .setDescription('Documentação da API Zion')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
+  // 2. Condicional para rodar localmente no Windows ou na Vercel
+  if (process.env.NODE_ENV !== 'production') {
+    await app.listen(process.env.PORT || 3000);
+  } else {
+    // Na Vercel, apenas inicializamos e retornamos o motor do Express
+    await app.init();
+    return app.getHttpAdapter().getInstance();
+  }
 }
-bootstrap();
+
+// 3. O SEGREDO: Exportamos o resultado da execução para a Vercel
+const server = bootstrap();
+export default server;
