@@ -27,10 +27,15 @@ async function bootstrap() {
 
   app.enableCors();
 
-  const port = 3000;
+  const port = process.env.PORT || 3000;
   await app.listen(port);
 
   console.log(`🚀 API rodando em: http://localhost:${port}/api/v1`);
   console.log(`📄 Documentação em: http://localhost:${port}/docs`);
 }
-bootstrap();
+
+if (process.env.NODE_ENV !== 'production') {
+  bootstrap();
+}
+
+export default bootstrap;
