@@ -32,6 +32,11 @@ export class CreateUserDto {
     @IsNotEmpty()
     email: string;
 
+    @ApiProperty({ example: '00000000000' })
+    @IsString()
+    @IsNotEmpty()
+    document: string;
+
     @ApiProperty({ example: 'Senha@123', description: 'Senha forte do usuário' })
     @IsString()
     @IsNotEmpty()

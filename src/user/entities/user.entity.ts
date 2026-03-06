@@ -7,6 +7,7 @@ export class User {
     email: string
     password: string
     phoneNumber: string
+    document: string
     role: string
     userType: string
     birthDate: Date
